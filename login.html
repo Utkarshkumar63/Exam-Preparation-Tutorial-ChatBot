@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auth | Exam Prep</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .particles {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .auth-container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      width: 350px;
+      color: #fff;
+      animation: fadeIn 1s ease forwards;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .error {
+      color: #ffbaba;
+      font-size: 14px;
+      display: none;
+      margin-top: -6px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4f46e5;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #3730a3;
+      transform: scale(1.03);
+    }
+
+    .toggle-text, .link {
+      color: #e0e0ff;
+      font-size: 14px;
+      margin-top: 10px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .link:hover, .toggle-text span:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Particle Background -->
+  <div class="particles" id="particles"></div>
+
+  <div class="auth-container">
+    <h2 id="formTitle">Login</h2>
+    <form id="authForm" onsubmit="handleAuth(event)">
+      <input type="text" id="username" placeholder="Username" required />
+      <div class="error" id="userError">Username must be at least 3 characters</div>
+
+      <input type="password" id="password" placeholder="Password" required />
+      <div class="error" id="passError">Password must be at least 6 characters</div>
+
+      <input type="email" id="email" placeholder="Email" class="hidden" />
+      <div class="error" id="emailError">Enter a valid email</div>
+
+      <button type="submit" id="submitBtn">Login</button>
+    </form>
+
+    <div class="link" onclick="toggleForgotPassword()">Forgot Password?</div>
+    <div class="toggle-text" onclick="toggleMode()">Don't have an account? <span id="toggleText">Sign Up</span></div>
+  </div>
+
+  <script>
+    // Particle Generator
+    const particleContainer = document.getElementById("particles");
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement("div");
+      p.classList.add("particle");
+      p.style.width = p.style.height = `${Math.random() * 8 + 4}px`;
+      p.style.left = `${Math.random() * 100}%`;
+      p.style.animationDuration = `${Math.random() * 20 + 10}s`;
+      p.style.animationDelay = `${Math.random() * 5}s`;
+      particleContainer.appendChild(p);
+    }
+
+    // Form Logic
+    let isLogin = true;
+
+    function toggleMode() {
+      isLogin = !isLogin;
+      const title = document.getElementById('formTitle');
+      const emailField = document.getElementById('email');
+      const toggleText = document.getElementById('toggleText');
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (isLogin) {
+        title.innerText = 'Login';
+        emailField.classList.add('hidden');
+        toggleText.innerText = 'Sign Up';
+        submitBtn.innerText = 'Login';
+      } else {
+        title.innerText = 'Sign Up';
+        emailField.classList.remove('hidden');
+        toggleText.innerText = 'Login';
+        submitBtn.innerText = 'Sign Up';
+      }
+    }
+
+    function toggleForgotPassword() {
+      alert("Redirecting to password reset (you can implement this page)");
+    }
+
+    function handleAuth(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username');
+      const password = document.getElementById('password');
+      const email = document.getElementById('email');
+      const userError = document.getElementById('userError');
+      const passError = document.getElementById('passError');
+      const emailError = document.getElementById('emailError');
+
+      let valid = true;
+
+      if (username.value.length < 3) {
+        userError.style.display = 'block';
+        valid = false;
+      } else {
+        userError.style.display = 'none';
+      }
+
+      if (password.value.length < 6) {
+        passError.style.display = 'block';
+        valid = false;
+      } else {
+        passError.style.display = 'none';
+      }
+
+      if (!isLogin && !email.value.includes("@")) {
+        emailError.style.display = 'block';
+        valid = false;
+      } else {
+        emailError.style.display = 'none';
+      }
+
+      if (valid) {
+        if (isLogin) {
+          localStorage.setItem("loggedIn", "true");
+          window.location.href = "main.html";
+        } else {
+          alert("Account created successfully!");
+          toggleMode();
+        }
+      }
+    }
+  </script>
+</body>
+</html>
